@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: API TRUFO
+  description: API para el registro y consulta de avistamientos de OVNIs.
+  version: "1.0.0"
+
+servers:
+  - url: https://api.ovnis.com/v1
+    description: Servidor principal
+
+paths:
+  /sightings:
+    get:
+      summary: Obtiene una lista de avistamientos
+      description: Devuelve una lista de registros de avistamientos. Se pueden aplicar filtros por ciudad, estado, país, forma y rango de fechas, 
+        además de usar paginación.
+      parameters:
+        - name: page
+          in: query
+          description: Número de página para la paginación (por defecto 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Número de resultados por página (por defecto 10)
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: city
+          in: query
+          description: Filtrar por ciudad
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: Filtrar por estado
+          required: false
+          schema:
+            type: string
+        - name: country
+          in: query
+          description: Filtrar por país
+          required: false
+          schema:
+            type: string
+        - name: shape
+          in: query
+          description: Filtrar por forma del OVNI
+          required: false
+          schema:
+            type: string
+        - name: from_datetime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: to_datetime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Lista de avistamientos correspondiente a los filtros aplocados.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Número total de avistamientos que cumplen con los filtros
+                  page:
+                    type: integer
+                    description: Página actual
+                  limit:
+                    type: integer
+                    description: Cantidad de resultados por página
+                  sightings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sighting'
+        '500':
+          description: Error interno del servidor
+
+    post:
+      summary: Crea un nuevo avistamiento
+      description: Añade un nuevo OVNI a la DB
+      requestBody:
+        description: Objeto con la información del avistamiento a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sighting'
+      responses:
+        '201':
+          description: Avistamiento creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sighting'
+        '400':
+          description: Datos incorrectos
+
+  /sightings/{sightingId}:
+    get:
+      summary: Obtiene un avistamiento específico
+      description: Devuelve la información de un avistamiento por id
+      parameters:
+        - name: sightingId
+          in: path
+          description: Id del avistamiento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Avistamiento obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sighting'
+        '404':
+          description: Avistamiento no encontrado
+
+    put:
+      summary: Actualiza un avistamiento existente
+      description: Modifica los datos de un avistamiento especifico
+      parameters:
+        - name: sightingId
+          in: path
+          description: Id del avistamiento
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Objeto con los datos actualizados del avistamiento.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sighting'
+      responses:
+        '200':
+          description: Avistamiento actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sighting'
+        '400':
+          description: Datos incorrectos, no actualizado
+        '404':
+          description: Avistamiento no encontrado
+
+    delete:
+      summary: Elimina un avistamiento
+      description: Elimina el registro de un avistamiento identificado por su ID.
+      parameters:
+        - name: sightingId
+          in: path
+          description: Id del avistamiento
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Avistamiento eliminado exitosamente
+        '404':
+          description: Avistamiento no encontrado
+
+components:
+  schemas:
+    Sighting:
+      type: object
+      description: Registro de un avistamiento de OVNIs.
+      properties:
+        id:
+          type: string
+          description: Identificador único del avistamiento.
+          example: "1"
+        datetime:
+          type: string
+          format: date-time
+          description: Fecha y hora del avistamiento.
+          example: "1949-10-10T20:30:00Z"
+        city:
+          type: string
+          description: Ciudad donde se reportó el avistamiento.
+          example: "san marcos"
+        state:
+          type: string
+          description: Estado donde se reportó el avistamiento.
+          example: "tx"
+        country:
+          type: string
+          description: País donde se reportó el avistamiento.
+          example: "us"
+        shape:
+          type: string
+          description: Forma del objeto avistado.
+          example: "cylinder"
+        duration_seconds:
+          type: integer
+          description: Duración del avistamiento en segundos.
+          example: 2700
+        duration_human:
+          type: string
+          description: Duración del avistamiento en formato legible (por ejemplo, "45 minutes").
+          example: "45 minutes"
+        comments:
+          type: string
+          description: Comentarios o detalles adicionales sobre el avistamiento.
+          example: "This event took place in early fall after a Boy Scout meeting..."
+        date_posted:
+          type: string
+          format: date
+          description: Fecha en que se publicó el reporte.
+          example: "2004-04-27"
+        latitude:
+          type: number
+          format: float
+          description: Latitud del lugar donde ocurrió el avistamiento.
+          example: 29.8830556
+        longitude:
+          type: number
+          format: float
+          description: Longitud del lugar donde ocurrió el avistamiento.
+          example: -97.9411111
+      required:
+        - datetime
+        - city
+        - country
+        - shape
+        - date_posted
+        - latitude
+        - longitude
