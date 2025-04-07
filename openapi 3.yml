@@ -3,10 +3,7 @@ info:
   title: API TRUFO
   description: API para el registro y consulta de avistamientos de OVNIs.
   version: "1.0.0"
-
-servers:
-  - url: https://api.ovnis.com/v1
-    description: Servidor principal
+  
 
 paths:
   /sightings:
@@ -120,6 +117,20 @@ paths:
           required: true
           schema:
             type: string
+        - name: page
+          in: query
+          description: Número de página para la paginación (por defecto 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Número de resultados por página (por defecto 10)
+          required: false
+          schema:
+            type: integer
+            default: 10
       responses:
         '200':
           description: Avistamiento obtenido correctamente
@@ -174,6 +185,81 @@ paths:
           description: Avistamiento eliminado exitosamente
         '404':
           description: Avistamiento no encontrado
+  /sightings/country:
+    get:
+      summary: Obtiene una lista de avistamientos por país
+      description: Devuelve una lista de avistamientos filtrados por país.
+      parameters:
+        - name: country
+          in: query
+          description: Nombre del país para filtrar los avistamientos
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de avistamientos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sighting'
+        '500':
+          description: Error interno del servidor
+    
+  /locations:
+    get:
+      summary: Obtiene una lista de ubicaciones
+      description: Devuelve una lista de ubicaciones donde han ocurrido avistamientos.
+      responses:
+        '200':
+          description: Lista de ubicaciones obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/location'
+        '500':
+          description: Error interno del servidor
+  
+  /people:
+    get:
+      summary: Obtiene una lista de personas
+      description: Devuelve una lista de personas que han reportado avistamientos.
+      responses:
+        '200':
+          description: Lista de personas obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/People'
+        '500':
+          description: Error interno del servidor
+    post:
+      summary: Crea una nueva persona
+      description: Añade una nueva persona a la base de datos.
+      requestBody:
+        description: Objeto con la información de la persona a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/People'
+      responses:
+        '201':
+          description: Persona creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/People'
+        '400':
+          description: Datos incorrectos
+      
+    
 
 components:
   schemas:
@@ -189,19 +275,7 @@ components:
           type: string
           format: date-time
           description: Fecha y hora del avistamiento.
-          example: "1949-10-10T20:30:00Z"
-        city:
-          type: string
-          description: Ciudad donde se reportó el avistamiento.
-          example: "san marcos"
-        state:
-          type: string
-          description: Estado donde se reportó el avistamiento.
-          example: "tx"
-        country:
-          type: string
-          description: País donde se reportó el avistamiento.
-          example: "us"
+          example: "1949-10-10T20:30:00Z" 
         shape:
           type: string
           description: Forma del objeto avistado.
@@ -233,6 +307,10 @@ components:
           format: float
           description: Longitud del lugar donde ocurrió el avistamiento.
           example: -97.9411111
+        index_people:
+          type: integer
+          description: Numero indentificador de la persona que ha registrado el avistamiento en la base de datos (Quién lo ha visto).
+          example: 223
       required:
         - datetime
         - city
@@ -241,3 +319,62 @@ components:
         - date_posted
         - latitude
         - longitude
+        - index_people
+    location:
+      type: object
+      description: Ubicación del avistamiento.
+      properties:
+        city:
+          type: string
+          description: Ciudad donde ocurrió el avistamiento.
+          example: "San Antonio"
+        state:
+          type: string
+          description: Estado donde ocurrió el avistamiento.
+          example: "Texas"
+        country:
+          type: string
+          description: País donde ocurrió el avistamiento.
+          example: "United States"
+        latitude:
+          type: number
+          format: float
+          description: Latitud del lugar donde ocurrió el avistamiento.
+          example: 29.8830556
+        longitude:
+          type: number
+          format: float
+          description: Longitud del lugar donde ocurrió el avistamiento.
+          example: -97.9411111
+      required:
+        - city
+        - state
+        - country
+    People:
+      type: object
+      description: Persona que ha registrado un avistamiento
+      properties:
+        index_people:
+          type: integer
+          description: Número identificador de la persona que ha registrado el avistamiento en la base de datos (Quién lo ha visto).
+          example: 223
+        firstName:
+          type: string
+          description: Nombre de la persona que ha registrado el avistamiento.
+          example: "John"
+        lastName:
+          type: string
+          description: Apellido de la persona que ha registrado el avistamiento.
+          example: "Doe"
+        company:
+          type: string
+          description: Empresa donde trabaja la persona que ha registrado el avistamiento.
+          example: "Tech Corp"
+        Phone:
+          type: string
+          description: Número de teléfono de la persona que ha registrado el avistamiento.
+          example: "+1-234-567-8900"
+        email:
+          type: string
+          description: Correo electrónico de la persona que ha registrado el avistamiento.
+          example: "urangel@espinoza-francis.net"
