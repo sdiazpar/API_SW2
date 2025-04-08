@@ -3,11 +3,15 @@ info:
   title: API TRUFO
   description: API para el registro y consulta de avistamientos de OVNIs.
   version: "1.0.0"
+security:
+  - ApiKeyAuth: []
   
 
 paths:
   /sightings:
     get:
+      security:
+        - ApiKeyAuth: []
       summary: Obtiene una lista de avistamientos
       description: Devuelve una lista de registros de avistamientos. Se pueden aplicar filtros por ciudad, estado, país, forma y rango de fechas, 
         además de usar paginación.
@@ -87,6 +91,8 @@ paths:
           description: Error interno del servidor
 
     post:
+      security:
+        - ApiKeyAuth: []
       summary: Crea un nuevo avistamiento
       description: Añade un nuevo OVNI a la DB
       requestBody:
@@ -108,6 +114,8 @@ paths:
 
   /sightings/{sightingId}:
     get:
+      security:
+        - ApiKeyAuth: []
       summary: Obtiene un avistamiento específico
       description: Devuelve la información de un avistamiento por id
       parameters:
@@ -142,6 +150,8 @@ paths:
           description: Avistamiento no encontrado
 
     put:
+      security:
+        - ApiKeyAuth: []
       summary: Actualiza un avistamiento existente
       description: Modifica los datos de un avistamiento especifico
       parameters:
@@ -171,6 +181,8 @@ paths:
           description: Avistamiento no encontrado
 
     delete:
+      security:
+        - ApiKeyAuth: []
       summary: Elimina un avistamiento
       description: Elimina el registro de un avistamiento identificado por su ID.
       parameters:
@@ -187,6 +199,8 @@ paths:
           description: Avistamiento no encontrado
   /sightings/country:
     get:
+      security:
+        - ApiKeyAuth: []
       summary: Obtiene una lista de avistamientos por país
       description: Devuelve una lista de avistamientos filtrados por país.
       parameters:
@@ -210,6 +224,8 @@ paths:
     
   /locations:
     get:
+      security:
+        - ApiKeyAuth: []
       summary: Obtiene una lista de ubicaciones
       description: Devuelve una lista de ubicaciones donde han ocurrido avistamientos.
       responses:
@@ -226,6 +242,8 @@ paths:
   
   /people:
     get:
+      security:
+        - ApiKeyAuth: []
       summary: Obtiene una lista de personas
       description: Devuelve una lista de personas que han reportado avistamientos.
       responses:
@@ -240,6 +258,8 @@ paths:
         '500':
           description: Error interno del servidor
     post:
+      security:
+        - ApiKeyAuth: []
       summary: Crea una nueva persona
       description: Añade una nueva persona a la base de datos.
       requestBody:
@@ -378,3 +398,9 @@ components:
           type: string
           description: Correo electrónico de la persona que ha registrado el avistamiento.
           example: "urangel@espinoza-francis.net"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Clave de API para autenticar las solicitudes.
