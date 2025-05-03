@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "person",
+    "type": "object",
+    "required": ["Index", "First Name", "Last Name", "Company", "Phone 1", "Email"],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "Index": {
+        "type": "string",
+        "pattern": "^[0-9]+$"
+      },
+      "First Name": {
+        "type": "string"
+      },
+      "Last Name": {
+        "type": "string"
+      },
+      "Company": {
+        "type": "string"
+      },
+      "Phone 1": {
+        "type": "string",
+        "pattern": "^[0-9\\-]+$"
+      },
+      "Email": {
+        "type": "string",
+        "format": "email"
+      }
+    },
+    "additionalProperties": false
+  }
