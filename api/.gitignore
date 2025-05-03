@@ -1,1 +1,24 @@
-node_modules
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+yarn.lock
+package-lock.json
+
+# Archivo .gitignore
+.env
+.config
