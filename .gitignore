@@ -22,3 +22,6 @@ package-lock.json
 # Archivo .gitignore
 .env
 .config
+
+# Node modules
+node_modules/
