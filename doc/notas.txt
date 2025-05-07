@@ -1,0 +1,5 @@
+aspectos importantes:
+
+listado total te devuelva total, page, limit, [_id, shape, city, _]
+lo que te filtra te lo tiene que devolver: o eliminar query parameters
+añadir parametro next a openapi

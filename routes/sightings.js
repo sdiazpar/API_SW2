@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
       .find(query)
       .sort({_id: -1})
       .limit(limit)
-      .project({titulo:1})
+      .project({shape:1})
       .toArray()
       .catch(err => res.status(400).send('Error al buscar los avistamientos'));
     next = results.length == limit ? results[results.length - 1]._id : null;
