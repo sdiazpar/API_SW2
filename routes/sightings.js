@@ -5,7 +5,9 @@ const ObjectId = require('mongodb').ObjectId;
 const MAX_RESULTS = parseInt(process.env.MAX_RESULTS);
 const COLLECTION = "sightings";
 
-router.get('/', async (req, res) => {
+
+
+ router.get('/', async (req, res) => {
     let limit = MAX_RESULTS;
     if (req.query.limit){
       limit =  Math.min(parseInt(req.query.limit), MAX_RESULTS);
@@ -16,14 +18,41 @@ router.get('/', async (req, res) => {
       query = {_id: {$lt: new ObjectId(next)}}
     }
     const dbConnect = dbo.getDb();
+    const pipeline = [
+      { $match: query },                              // equivalente a find(query)
+      { $sort: { _id: -1 } },                         // sort
+      { $limit: limit },                              // limit
+      { 
+        $project: {                                   // project
+          shape: 1, 
+          latitude: 1, 
+          longitude: 1, 
+          date: 1, 
+          user_id: 1 
+        } 
+      },
+      {
+        $lookup: {                                    // lookup en people
+          from: "people",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "User",
+          pipeline: [
+            { $project: { _id: 1, Email: 1 } } // project
+          ]
+        },
+      },
+      {
+        $unwind: { path: "$User", preserveNullAndEmptyArrays: true } // unwind
+      }
+    ];
+
     let results = await dbConnect
       .collection(COLLECTION)
-      .find(query)
-      .sort({_id: -1})
-      .limit(limit)
-      .project({shape:1})
+      .aggregate(pipeline)
       .toArray()
       .catch(err => res.status(400).send('Error al buscar los avistamientos'));
     next = results.length == limit ? results[results.length - 1]._id : null;
     res.json({results, next}).status(200);
 });
+module.exports = router;

@@ -66,6 +66,12 @@ paths:
           schema:
             type: string
             format: date-time
+        - name: next
+          in: query
+          description: URL para la siguiente página de resultados
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de avistamientos correspondiente a los filtros aplocados.

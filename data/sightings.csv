@@ -1,4 +1,4 @@
-datetime,shape,duration (seconds),comments,date posted,latitude,longitude ,index_people
+datetime,shape,duration (seconds),comments,date_posted,latitude,longitude,index_people
 10/10/1949 20:30,cylinder,2700,This event took place in early fall around 1949-50. It occurred after a Boy Scout meeting in the Baptist Church. The Baptist Church sit,27/04/2004,29.8830556,-97.9411111,1468
 10/10/1949 21:00,light,7200,1949 Lackland AFB&#44 TX.  Lights racing across the sky &amp; making 90 degree turns on a dime.,16/12/2005,29.38421,-98.581082,90
 10/10/1955 17:00,circle,20,Green/Orange circular disc over Chester&#44 England,21/01/2008,53.2,-2.916667,7118
