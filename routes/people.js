@@ -11,13 +11,12 @@ router.get('/', async (req, res) => {
         { $limit: 100 },                               // limit
         { 
             $project: {                                   // project
-                _id: 1, 
-                Email: 1, 
-                Name: 1, 
-                Surname: 1, 
-                Country: 1, 
-                City: 1, 
-                Date_of_birth: 1,
+                Index: 1, 
+                FirstName: 1, 
+                LastName: 1, 
+                Company: 1, 
+                Phone: 1, 
+                Email: 1,
             }
         },
     ];
