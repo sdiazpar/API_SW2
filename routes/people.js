@@ -28,4 +28,21 @@ router.get('/', async (req, res) => {
     res.json({results}).status(200);
 });
 
+router.post('/', async (req, res) => {
+    const dbConnect = dbo.getDb();
+    const newPerson = {
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+        Company: req.body.Company,
+        Phone: req.body.Phone,
+        Email: req.body.Email,
+    };
+    let result = await dbConnect
+      .collection(COLLECTION)
+      .insertOne(newPerson)
+      .catch(err => res.status(400).send('Error al insertar la persona'));
+    res.json(result).status(200);
+});
+
+
 module.exports = router;
