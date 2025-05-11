@@ -55,4 +55,19 @@ const COLLECTION = "sightings";
     next = results.length == limit ? results[results.length - 1]._id : null;
     res.json({results, next}).status(200);
 });
+
+// ruta GET /sightings/{sightingsId}
+router.get("/:sightingId", async (req, res) => {
+  const dbConnect = dbo.getDb();
+  let query = { _id: new ObjectId(req.params.sightingId) };
+  let result = await dbConnect
+    .collection(COLLECTION)
+    .findOne(query);
+  if (result) {
+    res.status(200).send(result);
+  } else {
+    res.status(404).send('No se encontró el avistamiento');
+  }
+});
+
 module.exports = router;

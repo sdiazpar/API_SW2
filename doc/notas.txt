@@ -7,7 +7,7 @@ añadir parametro next a openapi
 Hacer:
 Next bien, que sea el siguiente y empiece a partirr de ese.
 GET /locations Conectar con Google Maps (geolocalization)
-GET /sightings/{sightingsId} -> no le hace falta paginacion, nada que paginar. Ni limitar
+GET /sightings/{sightingsId} -> hecho de momento, probar en Postman: localhost:3000/sightings/68205232099a58e0d86bdace
 POST /sightings
 DELETE /sightings
 GET /people
@@ -15,6 +15,7 @@ POST /people
 
 
 
-
+// Comandos para arrancar
 node loadCsv.js
 node foreingKeys.js
+npm start

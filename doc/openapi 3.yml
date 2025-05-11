@@ -131,20 +131,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: page
-          in: query
-          description: Número de página para la paginación (por defecto 1)
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          description: Número de resultados por página (por defecto 10)
-          required: false
-          schema:
-            type: integer
-            default: 10
       responses:
         '200':
           description: Avistamiento obtenido correctamente
