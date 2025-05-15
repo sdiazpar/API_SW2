@@ -93,6 +93,9 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Sighting'
+                  next:
+                    description: URL para la siguiente página de resultados
+                    type: string
         '500':
           description: Error interno del servidor
 

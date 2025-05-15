@@ -2,28 +2,56 @@ const express = require('express');
 const router = express.Router();
 const dbo = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
+const { URLSearchParams } = require('url');
 const MAX_RESULTS = parseInt(process.env.MAX_RESULTS);
 const COLLECTION = "sightings";
 
+router.get('/', async (req, res) => {
+    let cityQuery = req.query.city;
+    let stateQuery = req.query.state;
+    let countryQuery = req.query.country;
+    let shapeQuery = req.query.shape;
+    
+    let fromDate = req.query.from_datetime;
+    let toDate = req.query.toDate;
 
-
- router.get('/', async (req, res) => {
     let limit = MAX_RESULTS;
     if (req.query.limit){
       limit =  Math.min(parseInt(req.query.limit), MAX_RESULTS);
     }
+    console.log(req.baseUrl);
     let next = req.query.next;
     let query = {}
+    let query2 = {}
+    let query3 = {}
+    let query4 = {}
     if (next){
       query = {_id: {$lt: new ObjectId(next)}}
     }
+    // if (cityQuery) {
+    //   query2 = { city: { $regex: cityQuery, $options: 'i' } };
+    // }
+    if (shapeQuery){
+      query2 = { shape: { $regex: shapeQuery, $options: 'i' } };
+    }
+    if (fromDate){
+      console.log(fromDate);
+      console.log(new Date(fromDate));
+      query3 = { datetime: { $gte: new Date(fromDate) } };
+    }
+    if (toDate){
+      query4 = { datetime: { $lte: new Date(toDate) } };
+    }
     const dbConnect = dbo.getDb();
     const pipeline = [
-      { $match: query },                              // equivalente a find(query)
-      { $sort: { _id: -1 } },                         // sort
-      { $limit: limit },                              // limit
+      { $match: query },
+      { $match: query2},
+      { $match: query3},
+      { $match: query4},
+      { $sort: { _id: -1 } },
+      { $limit: limit },
       { 
-        $project: {                                   // project
+        $project: {
           shape: 1, 
           latitude: 1, 
           longitude: 1, 
@@ -32,18 +60,18 @@ const COLLECTION = "sightings";
         } 
       },
       {
-        $lookup: {                                    // lookup en people
+        $lookup: {
           from: "people",
           localField: "user_id",
           foreignField: "_id",
           as: "User",
           pipeline: [
-            { $project: { _id: 1, Email: 1 } } // project
+            { $project: { _id: 0, Email: 1 } }
           ]
         },
       },
       {
-        $unwind: { path: "$User", preserveNullAndEmptyArrays: true } // unwind
+        $unwind: { path: "$User", preserveNullAndEmptyArrays: true }
       }
     ];
 
@@ -52,8 +80,19 @@ const COLLECTION = "sightings";
       .aggregate(pipeline)
       .toArray()
       .catch(err => res.status(400).send('Error al buscar los avistamientos'));
-    next = results.length == limit ? results[results.length - 1]._id : null;
-    res.json({results, next}).status(200);
+
+    const lastId = results.length === limit ? results[results.length - 1]._id : null;
+    let nextLink = null;
+    if (lastId) {
+      const params = { ...req.query, next: lastId.toString() };
+      const qs = new URLSearchParams(params).toString();
+
+      console.log(qs);
+      console.log(req.baseUrl);
+      console.log(req.query);
+      nextLink = `http://localhost:3000/sightings?${qs}`;
+    }
+    res.status(200).json({ results, next: nextLink });
 });
 
 // ruta GET /sightings/{sightingsId}
@@ -73,8 +112,9 @@ router.get("/:sightingId", async (req, res) => {
 //ruta DELETE /sightings/{sightingId}
 router.delete("/:sightingId", async (req, res) => {
   const dbConnect = dbo.getDb();
+  try{
   let query = { _id: new ObjectId(req.params.sightingId) };
-  let result = await dbConnect
+    let result = await dbConnect
     .collection(COLLECTION)
     .deleteOne(query);
   if (result.deletedCount > 0) {
@@ -82,6 +122,10 @@ router.delete("/:sightingId", async (req, res) => {
   } else {
     res.status(404).send('No se encontró el avistamiento');
   }
+  } catch (err) {
+    res.status(500).send('Error al eliminar el avistamiento');
+  }
+  
 });
 
 module.exports = router;
