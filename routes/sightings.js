@@ -5,6 +5,7 @@ const addFormats = require("ajv-formats");
 const dbo = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
 const { URLSearchParams } = require('url');
+const axios = require('axios');
 const MAX_RESULTS = parseInt(process.env.MAX_RESULTS);
 const COLLECTION = "sightings";
 
@@ -82,6 +83,31 @@ router.get('/', async (req, res) => {
       .aggregate(pipeline)
       .toArray()
       .catch(err => res.status(400).send('Error al buscar los avistamientos'));
+
+    // nuevo filtro por país usando API externa
+    if (countryQuery) {
+      const filtered = [];
+      for (const sighting of results) {
+        try {
+          const { data } = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+            params: {
+              lat: sighting.latitude,
+              lon: sighting.longitude,
+              format: 'json'
+            }
+          });
+          const country = data.address.country;
+          console.log(country);
+          console.log(countryQuery);
+          if (country && country.toLowerCase() === countryQuery.toLowerCase()) {
+            filtered.push(sighting);
+          }
+        } catch (e) {
+          console.error('Error geo API:', e);
+        }
+      }
+      results = filtered;
+    }
 
     const lastId = results.length === limit ? results[results.length - 1]._id : null;
     let nextLink = null;
