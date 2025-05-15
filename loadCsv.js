@@ -12,6 +12,9 @@ async function loadCsvToCollection(filePath, collectionName) {
         fs.createReadStream(filePath)
             .pipe(csv())
             .on('data', (row) => {
+                if (row.datetime) {
+                    row.datetime = new Date(row.datetime);
+                }
                 data.push(row);
             })
             .on('end', async () => {
