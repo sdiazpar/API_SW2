@@ -124,19 +124,27 @@ router.post('/', async (req, res) => {
   if (!user) {
     return res.status(400).json({ error: "Usuario no encontrado" });
   }
-
+  console.log(user);
+  console.log(user[0]._id);
   // Preparar el objeto sighting
   const sighting = {
-    ...data,
-    user_id: user._id
+    datetime : new Date(data.datetime),
+    shape : data.shape,
+    duration: data.duration,
+    comments: data.comments,
+    date_posted: new Date(data.date_posted),
+    latitude: data.latitude,
+    longitude: data.longitude,
+    user_id: user[0]._id
   };
-  delete sighting.user_email; // Eliminar el campo user_email del objeto sighting
+  console.log(sighting);
 
   // Insertar en la base de datos
   try {
     const result = await dbConnect.collection(COLLECTION).insertOne(sighting);
-    res.status(201).json(result.ops[0]);
+    res.status(201).send({ message: 'Avistamiento insertado', id: result.insertedId });
   } catch (err) {
+    console.error(err);
     res.status(400).send({error: 'Error al insertar el avistamiento', details: err });
   }
 });

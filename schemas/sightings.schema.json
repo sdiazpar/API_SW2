@@ -14,7 +14,7 @@
       "shape": {
         "type": "string"
       },
-      "duration_seconds": {
+      "duration": {
         "type": "integer"
       },
       "comments": {
@@ -25,12 +25,10 @@
         "format": "date-time"
       },
       "latitude": {
-        "type": "number",
-        "format": "float"
+        "type": "string"
       },
       "longitude": {
-        "type": "number",
-        "format": "float"
+        "type": "string"
       },
       "user_email": {
         "type": "string"
