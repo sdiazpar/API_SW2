@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
       .collection(COLLECTION)
       .insertOne(newPerson)
       .catch(err => res.status(400).send('Error al insertar la persona'));
-    res.json(result).status(201).send("Persona creada");
+    res.json(result).status(201);
 });
 
 module.exports = router;
