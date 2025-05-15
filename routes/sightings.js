@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
 const dbo = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
 const { URLSearchParams } = require('url');
@@ -93,6 +95,50 @@ router.get('/', async (req, res) => {
       nextLink = `http://localhost:3000/sightings?${qs}`;
     }
     res.status(200).json({ results, next: nextLink });
+});
+
+//ruta POST /sightings
+const ajv = new Ajv();
+addFormats(ajv);
+const sightingSchema = require('../schemas/sightings.schema.json');
+
+router.post('/', async (req, res) => {
+  const dbConnect = dbo.getDb();
+
+  // Validar el body con AJV
+  const validate = ajv.compile(sightingSchema);
+  const valid = validate(req.body);
+  if (!valid) {
+    return res.status(400).json({ error: "Datos inválidos", details: validate.errors });
+  }
+  const data = req.body;
+
+  // El usuario debe enviar el email en el body
+  const userEmail = data.user_email;
+  if (!userEmail) {
+    return res.status(400).json({ error: "Falta el email del usuario" });
+  }
+
+  // Buscar el usuario por email
+  const user = await dbConnect.collection('people').find({ Email: userEmail }).limit(1).toArray();
+  if (!user) {
+    return res.status(400).json({ error: "Usuario no encontrado" });
+  }
+
+  // Preparar el objeto sighting
+  const sighting = {
+    ...data,
+    user_id: user._id
+  };
+  delete sighting.user_email; // Eliminar el campo user_email del objeto sighting
+
+  // Insertar en la base de datos
+  try {
+    const result = await dbConnect.collection(COLLECTION).insertOne(sighting);
+    res.status(201).json(result.ops[0]);
+  } catch (err) {
+    res.status(400).send({error: 'Error al insertar el avistamiento', details: err });
+  }
 });
 
 // ruta GET /sightings/{sightingsId}

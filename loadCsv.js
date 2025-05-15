@@ -15,6 +15,9 @@ async function loadCsvToCollection(filePath, collectionName) {
                 if (row.datetime) {
                     row.datetime = new Date(row.datetime);
                 }
+                if (row.date_posted) {
+                    row.date_posted = new Date(row.date_posted);
+                }
                 data.push(row);
             })
             .on('end', async () => {

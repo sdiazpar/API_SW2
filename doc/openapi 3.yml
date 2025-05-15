@@ -299,19 +299,15 @@ components:
           type: integer
           description: Duración del avistamiento en segundos.
           example: 2700
-        duration_human:
-          type: string
-          description: Duración del avistamiento en formato legible (por ejemplo, "45 minutes").
-          example: "45 minutes"
         comments:
           type: string
           description: Comentarios o detalles adicionales sobre el avistamiento.
           example: "This event took place in early fall after a Boy Scout meeting..."
         date_posted:
           type: string
-          format: date
+          format: date-time
           description: Fecha en que se publicó el reporte.
-          example: "2004-04-27"
+          example: "1949-11-10T20:30:00Z"
         latitude:
           type: number
           format: float
@@ -322,19 +318,19 @@ components:
           format: float
           description: Longitud del lugar donde ocurrió el avistamiento.
           example: -97.9411111
-        index_people:
-          type: integer
-          description: Numero indentificador de la persona que ha registrado el avistamiento en la base de datos (Quién lo ha visto).
-          example: 223
+        user_email:
+          type: string
+          description: Correo electrónico de la persona que ha registrado el avistamiento.
+          example: "example@email.com"
       required:
         - datetime
-        - city
-        - country
         - shape
+        - duration_seconds
+        - comments
         - date_posted
         - latitude
         - longitude
-        - index_people
+        - user_email
     location:
       type: object
       description: Ubicación del avistamiento.
