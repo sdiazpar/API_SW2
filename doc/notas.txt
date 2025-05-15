@@ -10,7 +10,7 @@ rober: GET /sightings: Next bien, que sea el siguiente y empiece a partirr de es
 rober: GET /locations Conectar con Google Maps (geolocalization)
 alejandro terminado: GET /sightings/{sightingsId} -> hecho de momento, probar en Postman: localhost:3000/sightings/68205232099a58e0d86bdace
 alejandro: POST /sightings: meter el CORREO del usuario y ajv
-sergio: DELETE /sightings/{sightingsId}:
+sergio terminado: DELETE /sightings/{sightingsId}:
 miguel: UPDATE /sightings/{sightingsId} añadirlo en openapi porque no estña hecho
 truji: GET /people
 truji: POST /people: ajv

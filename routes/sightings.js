@@ -70,4 +70,18 @@ router.get("/:sightingId", async (req, res) => {
   }
 });
 
+//ruta DELETE /sightings/{sightingId}
+router.delete("/:sightingId", async (req, res) => {
+  const dbConnect = dbo.getDb();
+  let query = { _id: new ObjectId(req.params.sightingId) };
+  let result = await dbConnect
+    .collection(COLLECTION)
+    .deleteOne(query);
+  if (result.deletedCount > 0) {
+    res.status(200).send('Avistamiento eliminado');
+  } else {
+    res.status(404).send('No se encontró el avistamiento');
+  }
+});
+
 module.exports = router;
