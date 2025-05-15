@@ -398,3 +398,5 @@ components:
       in: header
       name: X-API-Key
       description: Clave de API para autenticar las solicitudes.
+servers:
+  - url: http://localhost:3000
