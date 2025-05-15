@@ -40,7 +40,7 @@ router.get('/', async (req, res) => { //Aunque ponga que no usa el req hace falt
       .collection(COLLECTION)
       .aggregate(pipeline)
       .toArray()
-      .catch(err => res.status(400).send('Error al buscar los avistamientos'));
+      .catch(err => res.status(500).send('Error interno servidor al buscar las personas'));
     res.json({results}).status(200);
 });
 
