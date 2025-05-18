@@ -268,7 +268,7 @@ components:
           type: string
           description: Forma del objeto avistado.
           example: "cylinder"
-        duration_seconds:
+        "duration (seconds)":
           type: integer
           description: Duración del avistamiento en segundos.
           example: 2700
@@ -298,7 +298,7 @@ components:
       required:
         - datetime
         - shape
-        - duration_seconds
+        - "duration (seconds)"
         - comments
         - date_posted
         - latitude

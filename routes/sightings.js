@@ -140,7 +140,7 @@ router.post('/', async (req, res) => {
   const sighting = {
     datetime : new Date(data.datetime),
     shape : data.shape,
-    duration: data.duration,
+    "duration (seconds)": data["duration (seconds)"],
     comments: data.comments,
     date_posted: new Date(data.date_posted),
     latitude: data.latitude,
@@ -231,6 +231,49 @@ router.delete("/:sightingId", async (req, res) => {
     res.status(500).send('Error al eliminar el avistamiento');
   }
   
+});
+
+// ruta PUT /sightings/{sightingId}
+router.put("/:sightingId", async (req, res) => {
+  const dbConnect = dbo.getDb();
+  const sightingId = req.params.sightingId;
+  try {
+    if (!ObjectId.isValid(sightingId)) {
+      return res.status(400).send('ID de avistamiento inválido');
+    }
+    const validate = ajv.compile(sightingSchema);
+    const valid = validate(req.body);
+    if (!valid) {
+      return res.status(400).json({ error: "Datos inválidos", details: validate.errors });
+    }
+    const data = req.body;
+    const user = await dbConnect.collection('people').findOne({ Email: data.user_email });
+    if (!user) {
+      return res.status(400).json({ error: "Usuario no encontrado" });
+    }
+    // Preparar el objeto sighting actualizado
+    const updatedSighting = {
+      datetime: new Date(data.datetime),
+      shape: data.shape,
+      "duration (seconds)": data["duration (seconds)"],
+      comments: data.comments,
+      date_posted: new Date(data.date_posted),
+      latitude: data.latitude,
+      longitude: data.longitude,
+      user_id: user._id
+    };
+    let query = { _id: new ObjectId(sightingId) };
+    const result = await dbConnect
+      .collection(COLLECTION)
+      .replaceOne(query, { ...updatedSighting, _id: new ObjectId(sightingId) });
+    if (result.matchedCount > 0) {
+      res.status(200).json({ ...updatedSighting, _id: sightingId });
+    } else {
+      res.status(404).json({ error: "No se encontró el avistamiento" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error interno del servidor", details: err.message });
+  }
 });
 
 module.exports = router;
