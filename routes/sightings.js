@@ -10,7 +10,6 @@ const MAX_RESULTS = parseInt(process.env.MAX_RESULTS);
 const COLLECTION = "sightings";
 
 router.get('/', async (req, res) => {
-    let countryQuery = req.query.country;
     let shapeQuery = req.query.shape;
     
     let fromDate = req.query.from_datetime;
@@ -59,6 +58,12 @@ router.get('/', async (req, res) => {
               { $toString: "$latitude" },
               "/",
               { $toString: "$longitude" }
+            ]
+          },
+          sightsing: {
+            $concat: [
+              "http://localhost:3000/sightings/",
+              { $toString: "$_id" }
             ]
           }
         }
