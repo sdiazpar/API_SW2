@@ -194,14 +194,23 @@ router.get('/user', async (req, res) => {
 // ruta GET /sightings/{sightingsId}
 router.get("/:sightingId", async (req, res) => {
   const dbConnect = dbo.getDb();
-  let query = { _id: new ObjectId(req.params.sightingId) };
-  let result = await dbConnect
-    .collection(COLLECTION)
-    .findOne(query);
-  if (result) {
-    res.status(200).send(result);
-  } else {
-    res.status(404).send('No se encontró el avistamiento');
+  const sightingId = req.params.sightingId;
+  try {
+    if (!ObjectId.isValid(sightingId)) {
+      return res.status(400).send('ID de avistamiento inválido');
+    }
+
+    let query = { _id: new ObjectId(sightingId) };
+    let result = await dbConnect
+      .collection(COLLECTION)
+      .findOne(query);
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(404).send('No se encontró el avistamiento');
+    }
+  } catch (err) {
+    res.status(400).send("ID de avistamiento inválido");
   }
 });
 
