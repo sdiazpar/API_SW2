@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
               { $toString: "$longitude" }
             ]
           },
-          sightsing: {
+          sighting: {
             $concat: [
               "http://localhost:3000/sightings/",
               { $toString: "$_id" }
@@ -181,6 +181,38 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).send({error: 'Error al insertar el avistamiento', details: err });
+  }
+});
+
+// ruta GET /sightings/user
+router.get('/user', async (req, res) => {
+  const dbConnect = dbo.getDb();
+  const userEmail = req.query.user_email;
+
+  if (!userEmail) {
+    return res.status(400).json({ error: "El parámetro user_email es obligatorio" });
+  }
+
+  try {
+    // Buscar el usuario por email
+    const user = await dbConnect.collection('people').findOne({ Email: userEmail });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Buscar los avistamientos por user_id
+    const sightings = await dbConnect
+      .collection(COLLECTION)
+      .find({ user_id: user._id })
+      .toArray();
+
+    if (sightings.length === 0) {
+      return res.status(404).json({ message: "No se encontraron avistamientos para ese usuario" });
+    }
+
+    res.status(200).json(sightings);
+  } catch (err) {
+    res.status(500).json({ error: "Error al buscar los avistamientos" });
   }
 });
 
