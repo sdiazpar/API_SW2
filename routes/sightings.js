@@ -10,8 +10,6 @@ const MAX_RESULTS = parseInt(process.env.MAX_RESULTS);
 const COLLECTION = "sightings";
 
 router.get('/', async (req, res) => {
-    let cityQuery = req.query.city;
-    let stateQuery = req.query.state;
     let countryQuery = req.query.country;
     let shapeQuery = req.query.shape;
     
@@ -31,9 +29,6 @@ router.get('/', async (req, res) => {
     if (next){
       query = {_id: {$lt: new ObjectId(next)}}
     }
-    // if (cityQuery) {
-    //   query2 = { city: { $regex: cityQuery, $options: 'i' } };
-    // }
     if (shapeQuery){
       query2 = { shape: { $regex: shapeQuery, $options: 'i' } };
     }
@@ -48,19 +43,25 @@ router.get('/', async (req, res) => {
     const dbConnect = dbo.getDb();
     const pipeline = [
       { $match: query },
-      { $match: query2},
-      { $match: query3},
-      { $match: query4},
+      { $match: query2 },
+      { $match: query3 },
+      { $match: query4 },
       { $sort: { _id: -1 } },
       { $limit: limit },
-      { 
+      {
         $project: {
-          shape: 1, 
-          latitude: 1, 
-          longitude: 1, 
-          date: 1, 
-          user_id: 1 
-        } 
+          shape: 1,
+          date: 1,
+          user_id: 1,
+          location: {
+            $concat: [
+              "http://localhost:3000/location/",
+              { $toString: "$latitude" },
+              "/",
+              { $toString: "$longitude" }
+            ]
+          }
+        }
       },
       {
         $lookup: {
@@ -85,29 +86,29 @@ router.get('/', async (req, res) => {
       .catch(err => res.status(400).send('Error al buscar los avistamientos'));
 
     // nuevo filtro por país usando API externa
-    if (countryQuery) {
-      const filtered = [];
-      for (const sighting of results) {
-        try {
-          const { data } = await axios.get('https://nominatim.openstreetmap.org/reverse', {
-            params: {
-              lat: sighting.latitude,
-              lon: sighting.longitude,
-              format: 'json'
-            }
-          });
-          const country = data.address.country;
-          console.log(country);
-          console.log(countryQuery);
-          if (country && country.toLowerCase() === countryQuery.toLowerCase()) {
-            filtered.push(sighting);
-          }
-        } catch (e) {
-          console.error('Error geo API:', e);
-        }
-      }
-      results = filtered;
-    }
+    // if (countryQuery) {
+    //   const filtered = [];
+    //   for (const sighting of results) {
+    //     try {
+    //       const { data } = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+    //         params: {
+    //           lat: sighting.latitude,
+    //           lon: sighting.longitude,
+    //           format: 'json'
+    //         }
+    //       });
+    //       const country = data.address.country;
+    //       console.log(country);
+    //       console.log(countryQuery);
+    //       if (country && country.toLowerCase() === countryQuery.toLowerCase()) {
+    //         filtered.push(sighting);
+    //       }
+    //     } catch (e) {
+    //       console.error('Error geo API:', e);
+    //     }
+    //   }
+    //   results = filtered;
+    // }
 
     const lastId = results.length === limit ? results[results.length - 1]._id : null;
     let nextLink = null;
