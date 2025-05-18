@@ -81,7 +81,10 @@ router.get('/', async (req, res) => {
       },
       {
         $unwind: { path: "$User", preserveNullAndEmptyArrays: true }
-      }
+      },
+      { $addFields: { UserEmail: "$User.Email" } },
+      { $project: { User: 0 } },
+      {$project: { user_id: 0 } },
     ];
 
     let results = await dbConnect
