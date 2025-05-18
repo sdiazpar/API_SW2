@@ -16,13 +16,6 @@ paths:
       description: Devuelve una lista de registros de avistamientos. Se pueden aplicar filtros por ciudad, estado, país, forma y rango de fechas, 
         además de usar paginación.
       parameters:
-        - name: page
-          in: query
-          description: Número de página para la paginación (por defecto 1)
-          required: false
-          schema:
-            type: integer
-            default: 1
         - name: limit
           in: query
           description: Número de resultados por página (por defecto 10)
@@ -30,24 +23,6 @@ paths:
           schema:
             type: integer
             default: 10
-        - name: city
-          in: query
-          description: Filtrar por ciudad
-          required: false
-          schema:
-            type: string
-        - name: state
-          in: query
-          description: Filtrar por estado
-          required: false
-          schema:
-            type: string
-        - name: country
-          in: query
-          description: Filtrar por país
-          required: false
-          schema:
-            type: string
         - name: shape
           in: query
           description: Filtrar por forma del OVNI
@@ -80,22 +55,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  total:
-                    type: integer
-                    description: Número total de avistamientos que cumplen con los filtros
-                  page:
-                    type: integer
-                    description: Página actual
-                  limit:
-                    type: integer
-                    description: Cantidad de resultados por página
                   sightings:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Sighting'
+                      $ref: '#/components/schemas/Sightings_reduced'
                   next:
                     description: URL para la siguiente página de resultados
                     type: string
+        '400':
+          description: Error al buscar avistamientos
         '500':
           description: Error interno del servidor
 
@@ -192,30 +160,9 @@ paths:
           description: Avistamiento eliminado exitosamente
         '404':
           description: Avistamiento no encontrado
-  /sightings/country:
-    get:
-      security:
-        - ApiKeyAuth: []
-      summary: Obtiene una lista de avistamientos por país
-      description: Devuelve una lista de avistamientos filtrados por país.
-      parameters:
-        - name: country
-          in: query
-          description: Nombre del país para filtrar los avistamientos
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Lista de avistamientos obtenida correctamente
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Sighting'
         '500':
-          description: Error interno del servidor
+          description: Error al eliminar el avistamiento
+
   /sightings/user:
     get:
       security:
@@ -239,12 +186,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/Sighting'
         '404':
-          description: No se encontraron avistamientos para ese usuario  
-  /locations:
+          description: No se encontraron avistamientos para ese usuario
+        '500':
+          description: Error interno del servidor  
+          
+  /locations/:latitud/:longitud:
     get:
       security:
         - ApiKeyAuth: []
-      summary: Obtiene una lista de ubicaciones
+      summary: Obtiene la ubicación de un avistamiento a partir de sus coordenadas
       description: Devuelve una lista de ubicaciones donde han ocurrido avistamientos.
       responses:
         '200':
@@ -358,32 +308,27 @@ components:
       type: object
       description: Ubicación del avistamiento.
       properties:
-        city:
-          type: string
-          description: Ciudad donde ocurrió el avistamiento.
-          example: "San Antonio"
-        state:
-          type: string
-          description: Estado donde ocurrió el avistamiento.
-          example: "Texas"
-        country:
+        pais:
           type: string
           description: País donde ocurrió el avistamiento.
           example: "United States"
-        latitude:
+        estado:
+          type: string
+          description: Estado donde ocurrió el avistamiento.
+          example: "Texas"
+        latitud:
           type: number
           format: float
           description: Latitud del lugar donde ocurrió el avistamiento.
           example: 29.8830556
-        longitude:
+        longitud:
           type: number
           format: float
           description: Longitud del lugar donde ocurrió el avistamiento.
           example: -97.9411111
       required:
-        - city
-        - state
-        - country
+        -latitude
+        -longitude
     People:
       type: object
       description: Persona que ha registrado un avistamiento
@@ -414,6 +359,27 @@ components:
         - Company
         - Phone
         - Email
+    Sightings_reduced:
+      type: object
+      description: Resumen de avistamientos.
+      properties:
+        _id:
+          type: string
+          description: Identificador único del avistamiento.
+          example: "6829c355a75ae84c71c323d3"
+        shape:
+          type: string
+          description: Forma del objeto avistado.
+          example: "cylinder"
+        location:
+          type: string
+          description: Url al endpoint donde obtener información de la ubicación del avistamiento.
+          example: "http://localhost:3000/location/29.8830556/-97.9411111"
+        UserEmail:
+          type: string
+          description: Correo electrónico de la persona que ha registrado el avistamiento.
+          example: "urangel@espinoza-francis.net"
+        
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

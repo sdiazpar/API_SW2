@@ -4,10 +4,10 @@ const dbo = require('../db/conn');
 const axios = require('axios');
 
 
-router.get("/:lat/:lon", async (req, res) => {
+router.get("/:latitud/:longitud", async (req, res) => {
   const dbConnect = dbo.getDb();
-  const lat = parseFloat(req.params.lat);
-  const lon = parseFloat(req.params.lon);
+  const lat = parseFloat(req.params.latitud);
+  const lon = parseFloat(req.params.longitud);
   
 
     const { data } = await axios.get('https://nominatim.openstreetmap.org/reverse', {
