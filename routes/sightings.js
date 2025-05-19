@@ -192,10 +192,6 @@ router.get('/user', async (req, res) => {
       .find({ user_id: user._id })
       .toArray();
 
-    if (sightings.length === 0) {
-      return res.status(404).json({ message: "No se encontraron avistamientos para ese usuario" });
-    }
-
     res.status(200).json(sightings);
   } catch (err) {
     res.status(500).json({ error: "Error interno del servidor" });
