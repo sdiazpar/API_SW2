@@ -10,6 +10,19 @@ var locationRouter = require('./routes/location');
 
 var app = express();
 
+function validateApiKey(req, res, next) {
+  // x-api-key en el header 
+  const apiKey = req.header('x-api-key') || req.query.api_key;
+  if (!apiKey) {
+    return res.status(401).json({ error: 'API key requerida' });
+  }
+  if (apiKey !== "abcd1234") {
+    return res.status(403).json({ error: 'API key inválida' });
+  }
+  req.apiKey = apiKey;
+  next();
+};
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -20,9 +33,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/sightings', sightingsRouter);
-app.use('/people', peopleRouter);
-app.use('/location', locationRouter);
+app.use('/sightings',validateApiKey ,sightingsRouter);
+app.use('/people', validateApiKey ,peopleRouter);
+app.use('/location', validateApiKey,locationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -10,6 +10,7 @@ const MAX_RESULTS = parseInt(process.env.MAX_RESULTS);
 const COLLECTION = "sightings";
 
 router.get('/', async (req, res) => {
+  try {
     let shapeQuery = req.query.shape;
     
     let fromDate = req.query.from_datetime;
@@ -105,6 +106,10 @@ router.get('/', async (req, res) => {
       nextLink = `http://localhost:3000/sightings?${qs}`;
     }
     res.status(200).json({ results, next: nextLink });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error interno del servidor');
+  }
 });
 
 //ruta POST /sightings

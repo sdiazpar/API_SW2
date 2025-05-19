@@ -205,8 +205,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/location'
+        '404':
+          description: No se encontraron resultados para las coordenadas proporcionadas
         '500':
-          description: Error interno del servidor
+          description: Error al conectar con el servicio de geolocalización
+ 
   
   /people:
     get:
