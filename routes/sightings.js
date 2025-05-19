@@ -119,40 +119,46 @@ const sightingSchema = require('../schemas/sightings.schema.json');
 
 router.post('/', async (req, res) => {
   const dbConnect = dbo.getDb();
+  let sighting;
+  
+  try {
+    // Validar el body con AJV
+    const validate = ajv.compile(sightingSchema);
+    const valid = validate(req.body);
+    if (!valid) {
+      return res.status(400).json({ error: "Datos inválidos", details: validate.errors });
+    }
+    const data = req.body;
 
-  // Validar el body con AJV
-  const validate = ajv.compile(sightingSchema);
-  const valid = validate(req.body);
-  if (!valid) {
-    return res.status(400).json({ error: "Datos inválidos", details: validate.errors });
-  }
-  const data = req.body;
+    // El usuario debe enviar el email en el body
+    const userEmail = data.user_email;
+    if (!userEmail) {
+      return res.status(400).json({ error: "Falta el email del usuario" });
+    }
 
-  // El usuario debe enviar el email en el body
-  const userEmail = data.user_email;
-  if (!userEmail) {
-    return res.status(400).json({ error: "Falta el email del usuario" });
+    // Buscar el usuario por email
+    const user = await dbConnect.collection('people').find({ Email: userEmail }).limit(1).toArray();
+    if (!user || user.length === 0) {
+      return res.status(400).json({ error: "Usuario no encontrado" });
+    }
+    console.log(user);
+    // console.log(user[0]._id);
+    // Preparar el objeto sighting
+    sighting = {
+      datetime : new Date(data.datetime),
+      shape : data.shape,
+      duration: data.duration,
+      comments: data.comments,
+      date_posted: new Date(data.date_posted),
+      latitude: data.latitude,
+      longitude: data.longitude,
+      user_id: user[0]._id
+    };
+    console.log(sighting);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
-
-  // Buscar el usuario por email
-  const user = await dbConnect.collection('people').find({ Email: userEmail }).limit(1).toArray();
-  if (!user) {
-    return res.status(400).json({ error: "Usuario no encontrado" });
-  }
-  console.log(user);
-  console.log(user[0]._id);
-  // Preparar el objeto sighting
-  const sighting = {
-    datetime : new Date(data.datetime),
-    shape : data.shape,
-    "duration (seconds)": data["duration (seconds)"],
-    comments: data.comments,
-    date_posted: new Date(data.date_posted),
-    latitude: data.latitude,
-    longitude: data.longitude,
-    user_id: user[0]._id
-  };
-  console.log(sighting);
 
   // Insertar en la base de datos
   try {

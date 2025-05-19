@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Sighting",
     "type": "object",
-    "required": ["datetime", "shape", "duration (seconds)", "comments", "date_posted", "latitude", "longitude", "user_email"],
+    "required": ["datetime", "shape", "duration", "comments", "date_posted", "latitude", "longitude", "user_email"],
     "properties": {
       "id": {
         "type": "string"
@@ -14,8 +14,8 @@
       "shape": {
         "type": "string"
       },
-      "duration (seconds)": {
-        "type": "integer"
+      "duration": {
+        "type": "string"
       },
       "comments": {
         "type": "string"
