@@ -23,16 +23,16 @@ const validate = ajv.compile(personSchema)
 router.get('/', async (req, res) => { //Aunque ponga que no usa el req hace falta
     const dbConnect = dbo.getDb();
     const pipeline = [
-        { $sort: { _id: -1 } },                         // sort
-        { $limit: 100 },                               // limit
+        { $sort: { _id: -1 } },                         
+        { $limit: 100 },                               
         { 
-            $project: {                                   // project
-                Index: 1, 
+            $project: {                                   
                 FirstName: 1, 
                 LastName: 1, 
                 Company: 1, 
                 Phone: 1, 
                 Email: 1,
+                _id: 0
             }
         },
     ];
@@ -40,14 +40,14 @@ router.get('/', async (req, res) => { //Aunque ponga que no usa el req hace falt
       .collection(COLLECTION)
       .aggregate(pipeline)
       .toArray()
-      .catch(err => res.status(500).send('Error interno servidor al buscar las personas'));
-    res.json({results}).status(200);
+      .catch(err => res.status(500).send('Error interno del servidor al buscar las personas'));
+    res.json(results).status(200);
 });
 
 router.post('/', async (req, res) => {
     const valid = validate(req.body);
     if (!valid) { //Devuelve error si el post no tiene todos los datos
-        return res.status(400).json({error: "Datos inválidos", details: validate.errors});
+        return res.status(400).json({error: "Datos inválidos"});
     }
     const dbConnect = dbo.getDb();
     const newPerson = {
@@ -60,8 +60,8 @@ router.post('/', async (req, res) => {
     let result = await dbConnect
       .collection(COLLECTION)
       .insertOne(newPerson)
-      .catch(err => res.status(400).send('Error al insertar la persona'));
-    res.json(result).status(201);
+      .catch(err => res.status(500).send('Error interno del servidor al insertar la persona'));
+    res.json(newPerson).status(201);
 });
 
 module.exports = router;
