@@ -266,7 +266,7 @@ router.put("/:sightingId", async (req, res) => {
     const updatedSighting = {
       datetime: new Date(data.datetime),
       shape: data.shape,
-      "duration (seconds)": data["duration (seconds)"],
+      duration: data.duration,
       comments: data.comments,
       date_posted: new Date(data.date_posted),
       latitude: data.latitude,
@@ -278,7 +278,7 @@ router.put("/:sightingId", async (req, res) => {
       .collection(COLLECTION)
       .replaceOne(query, { ...updatedSighting, _id: new ObjectId(sightingId) });
     if (result.matchedCount > 0) {
-      res.status(200).json({ ...updatedSighting, _id: sightingId });
+      res.status(200).json({ ...updatedSighting});
     } else {
       res.status(404).json({ error: "No se encontró el avistamiento" });
     }
