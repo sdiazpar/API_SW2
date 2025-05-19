@@ -85,9 +85,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Sighting'
+                $ref: '#/components/schemas/RespuestaSightingCorrecta'
         '400':
-          description: Datos incorrectos
+          description: Usuario no encontrado
+        '500':
+          description: Error interno del servidor
 
   /sightings/{sightingId}:
     get:
@@ -111,7 +113,7 @@ paths:
                 $ref: '#/components/schemas/Sighting'
         '404':
           description: Avistamiento no encontrado
-
+    
     put:
       security:
         - ApiKeyAuth: []
@@ -137,11 +139,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Sighting'
+                $ref: '#/components/schemas/sightingCreated'
         '400':
-          description: Datos incorrectos, no actualizado
+          description: Datos invalidos
         '404':
-          description: Avistamiento no encontrado
+          description: No se encontró el avistamiento
 
     delete:
       security:
@@ -159,7 +161,7 @@ paths:
         '204':
           description: Avistamiento eliminado exitosamente
         '404':
-          description: Avistamiento no encontrado
+          description: No se encontró el avistamiento
         '500':
           description: Error al eliminar el avistamiento
 
@@ -184,9 +186,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Sighting'
+                  $ref: '#/components/schemas/sightingCreated'
+        '400': 
+          description: El parámetro user_email es obligatorio
         '404':
-          description: No se encontraron avistamientos para ese usuario
+          description: Usuario no encontrado
         '500':
           description: Error interno del servidor  
           
@@ -227,7 +231,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/People'
         '500':
-          description: Error interno del servidor
+          description: Error interno del servidor al buscar las personas
     post:
       security:
         - ApiKeyAuth: []
@@ -248,7 +252,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/People'
         '400':
-          description: Datos incorrectos
+          description: Datos inválidos
+        '500':
+          description: Error interno del servidor al insertar la persona
       
     
 
@@ -258,10 +264,10 @@ components:
       type: object
       description: Registro de un avistamiento de OVNIs.
       properties:
-        id:
+        _id:
           type: string
           description: Identificador único del avistamiento.
-          example: "1"
+          example: "6829c355a75ae84c71c323d3"
         datetime:
           type: string
           format: date-time
@@ -271,10 +277,10 @@ components:
           type: string
           description: Forma del objeto avistado.
           example: "cylinder"
-        "duration (seconds)":
-          type: integer
+        duration:
+          type: string
           description: Duración del avistamiento en segundos.
-          example: 2700
+          example: "2700"
         comments:
           type: string
           description: Comentarios o detalles adicionales sobre el avistamiento.
@@ -285,12 +291,12 @@ components:
           description: Fecha en que se publicó el reporte.
           example: "1949-11-10T20:30:00Z"
         latitude:
-          type: number
+          type: string
           format: float
           description: Latitud del lugar donde ocurrió el avistamiento.
           example: 29.8830556
         longitude:
-          type: number
+          type: string
           format: float
           description: Longitud del lugar donde ocurrió el avistamiento.
           example: -97.9411111
@@ -319,19 +325,19 @@ components:
           type: string
           description: Estado donde ocurrió el avistamiento.
           example: "Texas"
-        latitud:
+        latitude:
           type: number
           format: float
           description: Latitud del lugar donde ocurrió el avistamiento.
           example: 29.8830556
-        longitud:
+        longitude:
           type: number
           format: float
           description: Longitud del lugar donde ocurrió el avistamiento.
           example: -97.9411111
       required:
-        -latitude
-        -longitude
+        - latitude
+        - longitude
     People:
       type: object
       description: Persona que ha registrado un avistamiento
@@ -378,10 +384,71 @@ components:
           type: string
           description: Url al endpoint donde obtener información de la ubicación del avistamiento.
           example: "http://localhost:3000/location/29.8830556/-97.9411111"
+        sightingId:
+          type: string
+          description: Url al endpoint donde obtener información del avistamiento.
+          example: "http://localhost:3000/sightings/6829c355a75ae84c71c323d3"
         UserEmail:
           type: string
           description: Correo electrónico de la persona que ha registrado el avistamiento.
           example: "urangel@espinoza-francis.net"
+    RespuestaSightingCorrecta: 
+      type: object
+      description: Respuesta al crear un avistamiento.
+      properties:
+        message:
+            type: string
+            description: Mensaje de éxito.
+            example: "Avistamiento insertado"
+        id:
+          type: string
+          description: Identificador único del avistamiento creado.
+          example: "6829c355a75ae84c71c323d3"
+    sightingCreated:
+      type: object
+      description: Registro de un avistamiento de OVNIs.
+      properties:
+        _id:
+          type: string
+          description: Identificador único del avistamiento.
+          example: "6829c355a75ae84c71c323d3"
+        datetime:
+          type: string
+          format: date-time
+          description: Fecha y hora del avistamiento.
+          example: "1949-10-10T20:30:00Z" 
+        shape:
+          type: string
+          description: Forma del objeto avistado.
+          example: "cylinder"
+        duration:
+          type: string
+          description: Duración del avistamiento en segundos.
+          example: "2700"
+        comments:
+          type: string
+          description: Comentarios o detalles adicionales sobre el avistamiento.
+          example: "This event took place in early fall after a Boy Scout meeting..."
+        date_posted:
+          type: string
+          format: date-time
+          description: Fecha en que se publicó el reporte.
+          example: "1949-11-10T20:30:00Z"
+        latitude:
+          type: string
+          format: float
+          description: Latitud del lugar donde ocurrió el avistamiento.
+          example: 29.8830556
+        longitude:
+          type: string
+          format: float
+          description: Longitud del lugar donde ocurrió el avistamiento.
+          example: -97.9411111
+        user_id:
+          type: string
+          description: id del usuario.
+          example: "6829c355a75ae84c71c323d3"
+
         
   securitySchemes:
     ApiKeyAuth:
