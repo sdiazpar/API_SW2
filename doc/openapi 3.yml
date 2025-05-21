@@ -178,6 +178,7 @@ paths:
           required: true
           schema:
             type: string
+            example: "urangel@espinoza-francis.net"
       responses:
         '200':
           description: Lista de avistamientos del usuario
