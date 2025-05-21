@@ -110,7 +110,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Sighting'
+                $ref: '#/components/schemas/sightingCreated'
         '404':
           description: Avistamiento no encontrado
     
@@ -139,7 +139,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sightingCreated'
+                $ref: '#/components/schemas/sightingCreatedWithoutId'
         '400':
           description: Datos invalidos
         '404':
@@ -250,7 +250,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/People'
+                $ref: '#/components/schemas/PeopleResponse'
         '400':
           description: Datos inválidos
         '500':
@@ -264,10 +264,6 @@ components:
       type: object
       description: Registro de un avistamiento de OVNIs.
       properties:
-        _id:
-          type: string
-          description: Identificador único del avistamiento.
-          example: "6829c355a75ae84c71c323d3"
         datetime:
           type: string
           format: date-time
@@ -303,7 +299,7 @@ components:
         user_email:
           type: string
           description: Correo electrónico de la persona que ha registrado el avistamiento.
-          example: "example@email.com"
+          example: "urangel@espinoza-francis.net"
       required:
         - datetime
         - shape
@@ -368,6 +364,35 @@ components:
         - Company
         - Phone
         - Email
+    PeopleResponse:
+      type: object
+      description: Persona que ha registrado un avistamiento
+      properties:
+        FirstName:
+          type: string
+          description: Nombre de la persona que ha registrado el avistamiento.
+          example: "John"
+        LastName:
+          type: string
+          description: Apellido de la persona que ha registrado el avistamiento.
+          example: "Doe"
+        Company:
+          type: string
+          description: Empresa donde trabaja la persona que ha registrado el avistamiento.
+          example: "Tech Corp"
+        Phone:
+          type: string
+          description: Número de teléfono de la persona que ha registrado el avistamiento.
+          example: "+1-234-567-8900"
+        Email:
+          type: string
+          description: Correo electrónico de la persona que ha registrado el avistamiento.
+          example: "urangel@espinoza-francis.net"
+        _id:
+          type: string
+          description: Identificador único de la persona.
+          example: "6829c355a75ae84c71c323d3"
+
     Sightings_reduced:
       type: object
       description: Resumen de avistamientos.
@@ -447,7 +472,48 @@ components:
         user_id:
           type: string
           description: id del usuario.
+          example: "6829c355a75ae84c71c323d3" 
+    sightingCreatedWithoutId:
+      type: object
+      description: Registro de un avistamiento de OVNIs.
+      properties:
+        datetime:
+          type: string
+          format: date-time
+          description: Fecha y hora del avistamiento.
+          example: "1949-10-10T20:30:00Z" 
+        shape:
+          type: string
+          description: Forma del objeto avistado.
+          example: "cylinder"
+        duration:
+          type: string
+          description: Duración del avistamiento en segundos.
+          example: "2700"
+        comments:
+          type: string
+          description: Comentarios o detalles adicionales sobre el avistamiento.
+          example: "This event took place in early fall after a Boy Scout meeting..."
+        date_posted:
+          type: string
+          format: date-time
+          description: Fecha en que se publicó el reporte.
+          example: "1949-11-10T20:30:00Z"
+        latitude:
+          type: string
+          format: float
+          description: Latitud del lugar donde ocurrió el avistamiento.
+          example: 29.8830556
+        longitude:
+          type: string
+          format: float
+          description: Longitud del lugar donde ocurrió el avistamiento.
+          example: -97.9411111
+        user_id:
+          type: string
+          description: id del usuario.
           example: "6829c355a75ae84c71c323d3"
+    
 
         
   securitySchemes:

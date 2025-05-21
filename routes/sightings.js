@@ -230,7 +230,7 @@ router.delete("/:sightingId", async (req, res) => {
     .collection(COLLECTION)
     .deleteOne(query);
   if (result.deletedCount > 0) {
-    res.status(204).send('Avistamiento eliminado');
+    res.status(200).send('Avistamiento eliminado');
   } else {
     res.status(404).send('No se encontró el avistamiento');
   }
