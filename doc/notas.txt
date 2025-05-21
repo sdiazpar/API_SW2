@@ -22,3 +22,15 @@ CAMBIOS EN OPENAPI para que se corresponda con el codigo
 node loadCsv.js
 node foreingKeys.js
 npm start
+
+
+
+
+// Demo
+http://localhost:3000/sightings + x-api-key (GET)
+http://localhost:3000/sightings + meter en body un ejemplo de la inserción (POST)
+http://localhost:3000/sightings/682e020a9026c1b5cf83ccca + x-api-key (GET)
+http://localhost:3000/sightings/68166a1c9386957070cc0796 + meter en body lo que se quiere cambiar
+http://localhost:3000/sightings/68166a1c9386957070cc0797 + meter el ID a borrar
+
+El resto trufi
