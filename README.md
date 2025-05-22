@@ -1,8 +1,6 @@
 # 🌍 API_SW2 – Registro y análisis de avistamientos OVNI  
 **Práctica de Sistemas Web 2**
 
-![Banner](https://i.ibb.co/VYM8N3DP/38107324-bcf3-4dbf-a839-8a6bc35371ad.jpg)
-
 ## 🧑‍💻 Equipo de desarrollo
 - Pablo Trujillo Oliva  
 - Alejandro García Menor  
@@ -19,6 +17,9 @@ Permite registrar reportes, consultar información histórica, filtrar por crite
 Esta API forma parte de la práctica final de la asignatura *Sistemas Web 2*.
 
 ---
+
+![Banner](https://i.ibb.co/VYM8N3DP/38107324-bcf3-4dbf-a839-8a6bc35371ad.jpg)
+
 
 ## 🚀 Instalación y ejecución
 
