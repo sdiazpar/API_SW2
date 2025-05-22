@@ -1,4 +1,4 @@
-# 🌍 API_SW2 – Registro y análisis de avistamientos OVNI  
+# 🌍 API_SW2 – Registro de avistamientos OVNI  
 **Práctica de Sistemas Web 2**
 
 ## 🧑‍💻 Equipo de desarrollo
@@ -11,8 +11,8 @@
 ---
 
 ## 📘 Descripción del proyecto  
-**API_SW2** es una API RESTful desarrollada para gestionar y analizar avistamientos de objetos voladores no identificados (OVNIs) a nivel mundial.  
-Permite registrar reportes, consultar información histórica, filtrar por criterios específicos (como ubicación o características del fenómeno) y obtener estadísticas agregadas.
+**API_SW2** es una API RESTful desarrollada para gestionar avistamientos de objetos voladores no identificados (OVNIs) a nivel mundial.  
+Permite registrar reportes, consultar información histórica, filtrar por criterios específicos (como ubicación o características del fenómeno).
 
 Esta API forma parte de la práctica final de la asignatura *Sistemas Web 2*.
 
