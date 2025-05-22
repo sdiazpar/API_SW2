@@ -32,11 +32,10 @@ Contiene información de los usuarios que registran avistamientos.
 ```json
 {
   "_id": { "$oid": "68166b03f7baa0d433937acb" },
-  "Index": "9",
   "First Name": "Bruce",
   "Last Name": "Payne",
   "Company": "Arroyo, Cain and Hudson",
-  "Phone 1": "391.313.4649x42910",
+  "Phone": "391.313.4649x42910",
   "Email": "mayerjerome@hurst-graham.net"
 }
 ```
@@ -44,11 +43,10 @@ Contiene información de los usuarios que registran avistamientos.
 | Campo         | Descripción                         |
 |---------------|-------------------------------------|
 | `_id`         | Identificador único del usuario     |
-| `Index`       | Número de índice interno            |
 | `First Name`  | Nombre del usuario                  |
 | `Last Name`   | Apellido del usuario                |
 | `Company`     | Empresa del usuario                 |
-| `Phone 1`     | Número de teléfono                  |
+| `Phone`     | Número de teléfono                  |
 | `Email`       | Correo electrónico                  |
 
 
