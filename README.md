@@ -111,7 +111,5 @@ npm start
 
 - Node.js + Express
 - MongoDB
-- dotenv
-- axios
 ---
 
