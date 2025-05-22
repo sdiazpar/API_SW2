@@ -1,22 +1,65 @@
-# API_SW2
-# Práctica de Sistemas Web 2
+# 🌍 API_SW2 – Registro y análisis de avistamientos OVNI  
+**Práctica de Sistemas Web 2**
 
-## Miembros:
-- Pablo Trujillo Oliva
-- Alejandro García Menor
-- Roberto Cinos Vega
-- Miguel Gamboa Sánchez
-- Sergio Díaz Paricio
+![Banner](https://i.ibb.co/VYM8N3DP/38107324-bcf3-4dbf-a839-8a6bc35371ad.jpg)
 
-## Scripts para cargar los datos iniciales de la base de datos y asociar los usuarios a los avistamientos.
-node loadCsv.js
-node foreingKeys.js
+## 🧑‍💻 Equipo de desarrollo
+- Pablo Trujillo Oliva  
+- Alejandro García Menor  
+- Roberto Cinos Vega  
+- Miguel Gamboa Sánchez  
+- Sergio Díaz Paricio  
 
-## Scripts para arrancar el proyecto
+---
+
+## 📘 Descripción del proyecto  
+**API_SW2** es una API RESTful desarrollada para gestionar y analizar avistamientos de objetos voladores no identificados (OVNIs) a nivel mundial.  
+Permite registrar reportes, consultar información histórica, filtrar por criterios específicos (como ubicación o características del fenómeno) y obtener estadísticas agregadas.
+
+Esta API forma parte de la práctica final de la asignatura *Sistemas Web 2*.
+
+---
+
+## 🚀 Instalación y ejecución
+
+### 1. Clonar el repositorio  
+```bash
+git clone https://github.com/tu-usuario/API_SW2.git
+cd API_SW2
+```
+
+### 2. Instalar dependencias  
+```bash
 npm install
+```
+
+### 3. Cargar datos iniciales  
+Se utilizan dos scripts para poblar la base de datos con los avistamientos y relaciones:
+```bash
+node loadCsv.js       # Carga los datos desde un archivo CSV
+node foreingKeys.js   # Asocia usuarios a los avistamientos
+```
+
+### 4. Iniciar el servidor  
+```bash
 npm start
+```
 
-(explicar esto mejor)
-Nuestra API permite a los usuarios registrar, consultar y analizar avistamientos de OVNIs en distintas partes del mundo. La API ofrece endpoints para agregar nuevos reportes, obtener estadísticas sobre avistamientos y buscar casos en función de ubicación, fecha o características del fenómeno.
+---
 
-[![swagger](https://i.ibb.co/v66N8pDB/image-2025-05-22-150215911.png)]
+## 📡 Funcionalidades principales
+
+- 📍 Registro de nuevos avistamientos
+- 🔍 Búsqueda por fecha, lugar o características
+- 📊 Estadísticas globales de avistamientos
+- 👤 Asociación de avistamientos a usuarios
+
+---
+
+## 🧪 Tecnologías utilizadas
+
+- Node.js + Express
+- MongoDB
+- dotenv
+---
+
