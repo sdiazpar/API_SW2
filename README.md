@@ -45,17 +45,6 @@ node foreingKeys.js   # Asocia usuarios a los avistamientos
 npm start
 ```
 
----
-
-## 📡 Funcionalidades principales
-
-- 📍 Registro de nuevos avistamientos
-- 🔍 Búsqueda por fecha, lugar o características
-- 📊 Estadísticas globales de avistamientos
-- 👤 Asociación de avistamientos a usuarios
-
----
-
 ## 🧪 Tecnologías utilizadas
 
 - Node.js + Express
