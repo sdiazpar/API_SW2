@@ -158,7 +158,7 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        '200':
           description: Avistamiento eliminado exitosamente
         '404':
           description: No se encontró el avistamiento
